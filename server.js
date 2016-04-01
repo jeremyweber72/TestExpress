@@ -1,126 +1,34 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var compress = require('compression');
-var morgan = require('morgan');
-var methodOverride = require('method-override');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+// Invoke 'strict' JavaScript mode
+'use strict';
+
+// Set the 'NODE_ENV' variable
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
+// Load the module dependencies
+var mongoose = require('./config/database'),
+    express = require('./config/express'),
+    passport = require('./config/passport'),
+    acl = require('./config/appacl')
 
 
+// Create a new Mongoose connection instance
+var db = mongoose();
 
+var acl = acl();
 
-
-
-var mongoose = require("mongoose");
-var dbURI = 'mongodb://localhost/TestExpress';
-
-
-mongoose.connect(dbURI);
-
-// CONNECTION EVENTS
-// When successfully connected
-mongoose.connection.on('connected', function () {
-  console.log('Mongoose default connection open to ' + dbURI);
-});
-
-// If the connection throws an error
-mongoose.connection.on('error',function (err) {
-  console.log('Mongoose default connection error: ' + err);
-});
-
-// When the connection is disconnected
-mongoose.connection.on('disconnected', function () {
-  console.log('Mongoose default connection disconnected');
-});
-
-// If the Node process ends, close the Mongoose connection
-process.on('SIGINT', function() {
-  mongoose.connection.close(function () {
-    console.log('Mongoose default connection disconnected through app termination');
-    process.exit(0);
-  });
-});
-
-require("./models/Organizations");
-require("./models/Users");
-require("./models/Applications");
-require("./models/Role");
-require("./models/Tests");
-
-var routes = require('./routes/index');
-var users = require('./routes/api/users');
-var applications = require('./routes/api/applications');
-var roles = require('./routes/api/roles');
-var organizations = require('./routes/api/organizations');
-var tests = require('./routes/api/tests');
-
-
-
+// Create a new Express application instance
 var app = express();
-//var passport = passport();
 
 
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+// Configure the Passport middleware
+var passport = passport();
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-//app.use(passport.initialise());
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-//app.use(express.session({ secret: 'SECRET' }));
-app.use(express.static(path.join(__dirname, 'public')));
+// Use the Express application instance to listen to the '3000' port
+app.listen(3001);
 
-app.use('/', routes);
-app.use('/api/users', users);
-app.use('/api/applications', applications);
-app.use('/api/roles', roles);
-app.use('/api/organizations', organizations);
-app.use('/api/tests', tests);
+// Log the server status to the console
+console.log('Server running at http://localhost:3001/');
 
-
-
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
-// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
-  });
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
-});
-
-
+// Use the module.exports property to expose our Express application instance for external usage
 module.exports = app;

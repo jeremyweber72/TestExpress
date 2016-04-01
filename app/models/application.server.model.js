@@ -1,6 +1,7 @@
 /**
  * Created by jweber on 3/11/2016.
  */
+'use strict';
 var mongoose = require('mongoose');
 
 var ApplicationSchema = new mongoose.Schema({

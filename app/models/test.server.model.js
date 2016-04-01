@@ -28,6 +28,7 @@
     "organization": "56f7f022a0cf35544af7cf06"
 }
  */
+'use strict';
 var mongoose = require('mongoose');
 
 var TestSchema = new mongoose.Schema({

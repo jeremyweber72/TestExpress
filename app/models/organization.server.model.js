@@ -1,6 +1,7 @@
 //todo: needs to be secured to just sysadmins
-
+'use strict';
 var mongoose = require("mongoose");
+
 //var crypto = require("crypto");
 //var jwt = require("jsonwebtoken");
 
@@ -16,12 +17,14 @@ var mongoose = require("mongoose");
 
  */
 
-var OrganizationSchema = new mongoose.Schema({
-  company: String,
-  name: String,
-  type: String,
-  enabled: Boolean,
-  expration: Date
-});
+  var OrganizationSchema = new mongoose.Schema({
+    company: String,
+    name: String,
+    type: String,
+    enabled: Boolean,
+    expration: Date
+  });
 
-module.exports = mongoose.model('Organization', OrganizationSchema);
+  //module.exports = mongoose.model('Organization', OrganizationSchema);
+
+mongoose.model('Organization', OrganizationSchema);

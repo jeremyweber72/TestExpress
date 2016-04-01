@@ -1,10 +1,16 @@
+// Invoke 'strict' JavaScript mode
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 var mongoose = require("mongoose");
-var Application = mongoose.model("Application");
+var db = require("../../../config/database");
+var Application = db().model("Application");
 
+//var Application = mongoose.model("Application");
 
-router.route("/")
+module.exports = function(app) {
+    router.route("/")
     .get(function(request, response, next) {
       Application.find(function(err, applications) {
         if (err) {
@@ -15,18 +21,17 @@ router.route("/")
       });
     })
     .post(function(req, res, next) {
-      var application = new Application(req.body);
-      application.save(function (err, application) {
+      var user = new User(req.body);
+        User.save(function (err, user) {
         if (err) {
           return next(err);
         }
-      }).then(function (application) {
-        res.json(application);
+      }).then(function (user) {
+        res.json(user);
       });
     });
 
+  app.use('/api/applications', router);
+};
 
 
-
-
-module.exports = router;
