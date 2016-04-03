@@ -2,6 +2,8 @@
 var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
+var db = require("../../../config/database");
+var User = db().model("User");
 
 module.exports = function(app) {
 
@@ -34,7 +36,58 @@ module.exports = function(app) {
 
         }
     });
+
+    router.use(function(req, res, next) {
+        console.log("next use");
+        //console.log(get_user_id());
+        isValid(req,res,next);
+
+        
+        return res.json({ success: true, message: req.decoded });
+    });
+
     app.use('/api', router);
+}
+
+// Provide logic for getting the logged-in user
+//  This is a job for your authentication layer
+function get_user_id( ) {
+    return 'jw@gmail.com';
+}
+
+function isValid( req, res, next) {
+
+    User.findById(req.decoded, function (err, users) {
+
+        if( users.enabled ) {
+            console.log(users.enabled)
+
+            return err;
+        }
+
+
+
+
+
+        if ( users.length == 0){
+            throw new err;
+        }
+
+        var _user = users[0];
+        console.log(users);
+
+
+
+
+
+        //console.log(users);
+
+
+        //response.json(users);
+    });
+
+
+    //return users;
 }
 
 
